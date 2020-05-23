@@ -18,7 +18,8 @@ func (hb helpBar) Render() string {
 		if i != 0 {
 			builder.WriteByte(' ')
 		}
-		builder.WriteString(colors.BlueBg(fmt.Sprintf("[%s] %s", entry.keys, entry.text)))
+		builder.WriteString(fmt.Sprintf("[%s] ", entry.keys))
+		builder.WriteString(colors.Bold(fmt.Sprintf("%s", entry.text)))
 	}
 	return builder.String()
 }

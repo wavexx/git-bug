@@ -150,6 +150,7 @@ func (ls *labelSelect) layout(g *gocui.Gui) error {
 			return err
 		}
 		v.Frame = false
+		v.BgColor = gocui.ColorBlue
 	}
 	v.Clear()
 	_, _ = fmt.Fprint(v, labelSelectHelp.Render())

@@ -28,7 +28,7 @@ var bugTableHelp = helpBar{
 	{"q", "Quit"},
 	{"s", "Search"},
 	{"←↓↑→,hjkl", "Navigation"},
-	{"↵]", "Open bug"},
+	{"↵", "Open bug"},
 	{"n", "New bug"},
 	{"i", "Pull"},
 	{"o", "Push"},
@@ -127,6 +127,7 @@ func (bt *bugTable) layout(g *gocui.Gui) error {
 		}
 
 		v.Frame = false
+		v.BgColor = gocui.ColorBlue
 
 		_, _ = fmt.Fprint(v, bugTableHelp.Render())
 	}
