@@ -152,15 +152,11 @@ func lsJsonFormatter(env *Env, bugExcerpts []*cache.BugExcerpt) error {
 			Metadata:   b.CreateMetadata,
 		}
 
-		if b.AuthorId != "" {
-			author, err := env.backend.ResolveIdentityExcerpt(b.AuthorId)
-			if err != nil {
-				return err
-			}
-			jsonBug.Author = NewJSONIdentityFromExcerpt(author)
-		} else {
-			jsonBug.Author = NewJSONIdentityFromLegacyExcerpt(&b.LegacyAuthor)
+		author, err := env.backend.ResolveIdentityExcerpt(b.AuthorId)
+		if err != nil {
+			return err
 		}
+		jsonBug.Author = NewJSONIdentityFromExcerpt(author)
 
 		jsonBug.Actors = make([]JSONIdentity, len(b.Actors))
 		for i, element := range b.Actors {
@@ -189,15 +185,9 @@ func lsJsonFormatter(env *Env, bugExcerpts []*cache.BugExcerpt) error {
 
 func lsDefaultFormatter(env *Env, bugExcerpts []*cache.BugExcerpt) error {
 	for _, b := range bugExcerpts {
-		var name string
-		if b.AuthorId != "" {
-			author, err := env.backend.ResolveIdentityExcerpt(b.AuthorId)
-			if err != nil {
-				return err
-			}
-			name = author.DisplayName()
-		} else {
-			name = b.LegacyAuthor.DisplayName()
+		author, err := env.backend.ResolveIdentityExcerpt(b.AuthorId)
+		if err != nil {
+			return err
 		}
 
 		var labelsTxt strings.Builder
@@ -211,7 +201,7 @@ func lsDefaultFormatter(env *Env, bugExcerpts []*cache.BugExcerpt) error {
 		// truncate + pad if needed
 		labelsFmt := text.TruncateMax(labelsTxt.String(), 10)
 		titleFmt := text.LeftPadMaxLine(b.Title, 50-text.Len(labelsFmt), 0)
-		authorFmt := text.LeftPadMaxLine(name, 15, 0)
+		authorFmt := text.LeftPadMaxLine(author.DisplayName(), 15, 0)
 
 		comments := fmt.Sprintf("%4d 💬", b.LenComments)
 		if b.LenComments > 9999 {
@@ -249,15 +239,9 @@ func lsOrgmodeFormatter(env *Env, bugExcerpts []*cache.BugExcerpt) error {
 			title = b.Title
 		}
 
-		var name string
-		if b.AuthorId != "" {
-			author, err := env.backend.ResolveIdentityExcerpt(b.AuthorId)
-			if err != nil {
-				return err
-			}
-			name = author.DisplayName()
-		} else {
-			name = b.LegacyAuthor.DisplayName()
+		author, err := env.backend.ResolveIdentityExcerpt(b.AuthorId)
+		if err != nil {
+			return err
 		}
 
 		labels := b.Labels
@@ -272,7 +256,7 @@ func lsOrgmodeFormatter(env *Env, bugExcerpts []*cache.BugExcerpt) error {
 			b.Id.Human(),
 			status,
 			b.CreateTime(),
-			name,
+			author.DisplayName(),
 			title,
 			labelsString,
 		)
